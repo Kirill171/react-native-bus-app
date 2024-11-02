@@ -11,24 +11,22 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function MainNavigator() {
-    const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
-    return (
-        <Stack.Navigator>
-          {isAuthenticated ? (
-            <>
-              <Stack.Screen name="Main" options={{ headerShown: false }}>
-                {() => (
-                  <Tab.Navigator>
-                    <Tab.Screen name="Home" component={HomeScreen} />
-                    <Tab.Screen name="Options" component={OptionsScreen} />
-                  </Tab.Navigator>
-                )}
-              </Stack.Screen>
-            </>
-          ) : (
-            <Stack.Screen name="Auth" component={AuthScreen} />
+  return (
+    <Stack.Navigator>
+      {isAuthenticated ? (
+        <Stack.Screen name="Main" options={{ headerShown: false }}>
+          {() => (
+            <Tab.Navigator>
+              <Tab.Screen name="Home" component={HomeScreen} />
+              <Tab.Screen name="Options" component={OptionsScreen} />
+            </Tab.Navigator>
           )}
-        </Stack.Navigator>
-    );
+        </Stack.Screen>
+      ) : (
+        <Stack.Screen name="Auth" component={AuthScreen} />
+      )}
+    </Stack.Navigator>
+  );
 };
