@@ -1,8 +1,10 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { Provider } from 'react-redux';
-import store from './store';
-import MainNavigator from './navigation/MainNavigator';
+import store from '@/store';
+import MainNavigator from '@/navigation/MainNavigator';
+import { NavigationContainer } from '@react-navigation/native';
+import 'react-native-get-random-values';
+
 
 export default function App() {
   return (
