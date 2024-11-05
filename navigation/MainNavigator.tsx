@@ -22,6 +22,7 @@ export default function MainNavigator() {
           {() => (
             <Tab.Navigator>
               <Tab.Screen name="Поиск" component={HomeScreen} options={{
+                headerShown: false,
                 tabBarIcon: ({ color }) => (
                   <Fontisto name="search" size={24} color={color} />
                 ),

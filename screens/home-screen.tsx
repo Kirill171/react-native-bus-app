@@ -1,14 +1,16 @@
 import React from 'react';
-import { View, StyleSheet, ImageBackground, Image, Text } from 'react-native';
+import { StyleSheet, ImageBackground, } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { RootState } from '@/store';
 import { logOut } from '@/store/authSlice';
 import Parse from '@/config/parse-config';
 import CustomButton from '@/components/custom-button';
 import BackGroundImage from '@/assets/back-ground.jpg';
-import LogoImage from '@/assets/bus-logo.png';
 import ModalSitySelector from '@/components/city-selector';
+import DatePicker from '@/components/date-picker';
+import LogoView from '@/components/logo-view';
 
 export default function HomeScreene() {
   const dispatch = useDispatch();
@@ -22,19 +24,12 @@ export default function HomeScreene() {
   return (
     <ImageBackground style={styles.container} source={BackGroundImage} >
       <SafeAreaView>
-        <View style={styles.logo}>
-          <Image style={styles.logoImage} source={LogoImage} />
-          <Text style={styles.logoText}>Jetset</Text>
-        </View>
+        <LogoView />
 
-        <View style={styles.searchForm}>
-          <ModalSitySelector clue='Откуда?' />
-          <ModalSitySelector clue='Куда?' />
-        </View>
+        <ModalSitySelector clue='Откуда?' />
+        <ModalSitySelector clue='Куда?' />
 
-        <View>
-          <Text> ---Тут нужно сделать выбор даты поездки и может количества мест--- </Text>
-        </View>
+        <DatePicker />
 
         <CustomButton title={`Выйти ${user.username}`} onPress={handlerLogOut} />
 
@@ -48,25 +43,4 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: "cover",
   },
-  logo: {
-    maxHeight: 100,
-    marginVertical: 25,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logoImage: {
-    width: 110,
-    height: 100,
-    resizeMode: 'stretch',
-    marginLeft: -40,
-    marginRight: 10,
-  },
-  logoText: {
-    fontSize: 35,
-    color: 'white',
-  },
-  searchForm: {
-
-  }
 });
