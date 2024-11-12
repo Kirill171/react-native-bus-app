@@ -11,6 +11,8 @@ import BackGroundImage from '@/assets/back-ground.jpg';
 import ModalSitySelector from '@/components/city-selector';
 import DatePicker from '@/components/date-picker';
 import LogoView from '@/components/logo-view';
+import PassengerSelector from '@/components/passenger-selector';
+import SearchButton from '@/components/search-buttom';
 
 export default function HomeScreene() {
   const dispatch = useDispatch();
@@ -26,10 +28,14 @@ export default function HomeScreene() {
       <SafeAreaView>
         <LogoView />
 
-        <ModalSitySelector clue='Откуда?' />
-        <ModalSitySelector clue='Куда?' />
+        <ModalSitySelector clue='Откуда?' isFromCity={true} />
+        <ModalSitySelector clue='Куда?' isFromCity={false} />
 
         <DatePicker />
+
+        <PassengerSelector />
+
+        <SearchButton />
 
         <CustomButton title={`Выйти ${user.username}`} onPress={handlerLogOut} />
 

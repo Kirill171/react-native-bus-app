@@ -1,46 +1,44 @@
 import React, { useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, StyleSheet } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { setFromCity, setToCity } from '@/store/searchSlice';
+import { setPassengers } from '@/store/searchSlice';
 
-interface ModalCitySelectorProps {
-  clue: string;
-  isFromCity: boolean;
-}
-
-const ModalCitySelector = ({ clue, isFromCity }: ModalCitySelectorProps) => {
+const PassengerSelector = () => {
   const dispatch = useDispatch();
-  const [selectedCity, setSelectedCity] = useState('Выберите город');
-  const [modalVisible, setModalVisible] = useState(false);
+  const [passengerCount, setPassengerCount] = useState(1);
+  const [isModalVisible, setModalVisible] = useState(false);
 
-  const cities = ['Минск', 'Гомель', 'Могилёв', 'Витебск', 'Гродно', 'Брест', 'Бобруйск', 'Барановичи'];
+  const openModal = () => setModalVisible(true);
+  const closeModal = () => setModalVisible(false);
 
-  const selectCity = (city: string) => {
-    setSelectedCity(city);
-    if (isFromCity) {
-      dispatch(setFromCity(city));
-    } else {
-      dispatch(setToCity(city));
-    }
-    setModalVisible(false);
+  const handleSelect = (count: number) => {
+    setPassengerCount(count);
+    dispatch(setPassengers(count));
+    closeModal();
+  };
+
+  const getPassengerText = (count: number) => {
+    if (count === 1) return '1 пассажир';
+    if (count > 1 && count < 5) return `${count} пассажира`;
+    return `${count} пассажиров`;
   };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.selector}>
-        <Text style={styles.clue}>{clue}</Text>
-        <Text style={styles.cityText}>{selectedCity}</Text>
+      <TouchableOpacity onPress={openModal} style={styles.selector}>
+        <Text style={styles.clue}>Пассажиры</Text>
+        <Text style={styles.countText}>{getPassengerText(passengerCount)}</Text>
       </TouchableOpacity>
 
-      <Modal visible={modalVisible} transparent animationType="slide">
+      <Modal visible={isModalVisible} transparent animationType="slide">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            {cities.map((city) => (
-              <TouchableOpacity key={city} onPress={() => selectCity(city)} style={styles.optionButton}>
-                <Text style={styles.optionText}>{city}</Text>
+            {[1, 2, 3, 4, 5].map((count) => (
+              <TouchableOpacity key={count} onPress={() => handleSelect(count)} style={styles.optionButton}>
+                <Text style={styles.optionText}>{getPassengerText(count)}</Text>
               </TouchableOpacity>
             ))}
-            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.doneButton}>
+            <TouchableOpacity onPress={closeModal} style={styles.doneButton}>
               <Text style={styles.doneText}>Готово</Text>
             </TouchableOpacity>
           </View>
@@ -59,8 +57,6 @@ const styles = StyleSheet.create({
     padding: 15,
     backgroundColor: '#ddd',
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: 'black',
   },
   clue: {
     position: 'absolute',
@@ -69,7 +65,7 @@ const styles = StyleSheet.create({
     color: 'gray',
     fontSize: 12,
   },
-  cityText: {
+  countText: {
     fontSize: 16,
     color: '#333',
   },
@@ -109,4 +105,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ModalCitySelector;
+export default PassengerSelector;
