@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, Text, View, StyleSheet, Platform } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import DatePickerWeb from 'react-datepicker';
 import { useDispatch } from 'react-redux';
-import { setDate } from '@/store/searchSlice'; 
+import { setDate } from '@/store/searchSlice';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const DatePicker = () => {
   const dispatch = useDispatch();
@@ -15,16 +17,15 @@ const DatePicker = () => {
     });
   };
 
-  const [date, setLocalDate] = useState((formatDate(new Date())));
+  const [date, setLocalDate] = useState((new Date()));
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
   const showDatePicker = () => setDatePickerVisibility(true);
   const hideDatePicker = () => setDatePickerVisibility(false);
 
   const handleConfirm = (selectedDate: Date) => {
-    const formattedDate = formatDate(selectedDate);
-    setLocalDate(formattedDate);
-    dispatch(setDate(formattedDate));
+    setLocalDate(selectedDate);
+    dispatch(setDate(selectedDate.toISOString()));
     hideDatePicker();
   };
 
@@ -35,7 +36,7 @@ const DatePicker = () => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={showDatePicker} style={styles.dateField}>
-        <Text style={styles.dateText}>{date}</Text>
+        <Text style={styles.dateText}>{formatDate(date)}</Text>
         <Text style={styles.clue}>Дата</Text>
       </TouchableOpacity>
       <DateTimePickerModal
@@ -74,6 +75,11 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 16,
     color: '#333',
+  },
+  webInput: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
   },
 });
 

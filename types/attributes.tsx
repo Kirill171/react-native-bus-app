@@ -1,0 +1,16 @@
+export default interface Attributes {
+  fromCity: string,
+  toCity: string,
+  date: Date,
+  departureTime: Date,
+  arrivalTime: Date,
+  passengers: number,
+  totalSeats: number,
+  remainingSeats: number,
+  price: number,
+  driverName: string,
+  driverPhone: string,
+  busNumberPlate: string,
+  busBrand: string,
+  busColor: string,
+}

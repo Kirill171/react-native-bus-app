@@ -11,13 +11,22 @@ export default function SearchButton() {
         console.log(toCity);
         console.log(date);
         console.log(passengers);
-        
 
-        const query = new Parse.Query('Flights');
+
+        const selectedDate = new Date(date);
+
+        const startOfDay = new Date(selectedDate);
+        startOfDay.setHours(0, 0, 0, 0);
+
+        const endOfDay = new Date(selectedDate);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const query = new Parse.Query('BusTrips');
         query.equalTo('fromCity', fromCity);
         query.equalTo('toCity', toCity);
-        query.equalTo('date', date);
-        query.equalTo('passengers', passengers);
+        query.greaterThanOrEqualTo('departureTime', startOfDay);
+        query.lessThanOrEqualTo('departureTime', endOfDay);
+        query.greaterThanOrEqualTo('remainingSeats', passengers);
 
         const results = await query.find();
         console.log(results);

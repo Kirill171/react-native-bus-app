@@ -1,18 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
+import SearchState from '@/types/search-types';
 
-const formatDate = (date: Date) => {
-  return date.toLocaleDateString('ru-RU', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
-};
-
-const initialState = {
+const initialState: SearchState = {
   fromCity: '',
   toCity: '',
-  date: formatDate(new Date()),
+  date: new Date().toISOString(),
   passengers: 1,
+  flightsData: null,
 };
 
 const searchSlice = createSlice({
@@ -26,13 +20,16 @@ const searchSlice = createSlice({
       state.toCity = action.payload;
     },
     setDate: (state, action) => {
-      state.date = formatDate(action.payload);
+      state.date = action.payload;
     },
     setPassengers: (state, action) => {
       state.passengers = action.payload;
     },
+    setFlightData: (state, action) => {
+      state.flightsData = action.payload;
+    },
   },
 });
 
-export const { setFromCity, setToCity, setDate, setPassengers } = searchSlice.actions;
+export const { setFromCity, setToCity, setDate, setPassengers, setFlightData } = searchSlice.actions;
 export default searchSlice.reducer;
