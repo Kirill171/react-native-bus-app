@@ -2,12 +2,13 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-
 import { Fontisto } from '@expo/vector-icons';
 import { RootState } from '@/store';
+
 import AuthScreen from '@/screens/auth-screen';
 import HomeScreen from '@/screens/home-screen';
 import OptionsScreen from '@/screens/tickets-screen';
+import ResultsScreen from '@/screens/results-screen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -39,6 +40,7 @@ export default function MainNavigator() {
       ) : (
         <Stack.Screen name="Авторизация" component={AuthScreen} />
       )}
+      <Stack.Screen name="Результаты-поиска" component={ResultsScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };

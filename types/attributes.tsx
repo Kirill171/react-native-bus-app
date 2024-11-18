@@ -1,10 +1,9 @@
 export default interface Attributes {
   fromCity: string,
   toCity: string,
-  date: Date,
-  departureTime: Date,
-  arrivalTime: Date,
-  passengers: number,
+  date: { iso: string },
+  departureTime: { iso: string },
+  arrivalTime: { iso: string },
   totalSeats: number,
   remainingSeats: number,
   price: number,

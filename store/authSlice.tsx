@@ -1,12 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppDispatch } from '@/store';
-
-interface AuthState {
-  isAuthenticated: boolean;
-  username?: string;
-  email?: string;
-}
+import AuthState from '@/types/auth-types';
 
 const initialState: AuthState = {
   isAuthenticated: false,

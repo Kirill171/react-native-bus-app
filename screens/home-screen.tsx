@@ -37,7 +37,7 @@ export default function HomeScreene() {
 
         <SearchButton />
 
-        <CustomButton title={`Выйти ${user.username}`} onPress={handlerLogOut} />
+        <CustomButton title={`Выйти с аккаунта - ${user.username}`} onPress={handlerLogOut} />
 
       </SafeAreaView>
     </ImageBackground>

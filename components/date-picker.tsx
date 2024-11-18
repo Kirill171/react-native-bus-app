@@ -1,19 +1,22 @@
 import React, { useState, forwardRef } from 'react';
 import { TouchableOpacity, Text, View, StyleSheet, Platform } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import ReactDatePicker from 'react-datepicker';
+import ReactDatePicker, { registerLocale } from 'react-datepicker';
+import { ru } from 'date-fns/locale/ru';
 import { useDispatch } from 'react-redux';
 import { setDate } from '@/store/searchSlice';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const CustomDateInput = forwardRef<TouchableOpacity, { value: string; onClick: () => void }>(
   ({ value, onClick }, ref) => (
-    <TouchableOpacity onPress={onClick} ref={ref} style={styles.dateField}>
+    <TouchableOpacity onPress={onClick} ref={ref} style={styles.dateFieldWeb}>
       <Text style={styles.dateText}>{value}</Text>
       <Text style={styles.clue}>Дата</Text>
     </TouchableOpacity>
   )
 );
+
+registerLocale('ru', ru);
 
 const DatePicker = () => {
   const dispatch = useDispatch();
@@ -38,6 +41,14 @@ const DatePicker = () => {
     hideDatePicker();
   };
 
+  const highlightWeekends = (date: Date) => {
+    const day = date.getDay();
+    const isWeekend = day === 0 || day === 6;
+    const isOutOfRange = date < minimumDate || date > maximumDate;
+    if (isOutOfRange) return 'out-of-range-day';
+    return isWeekend ? 'weekend-day' : undefined;
+  };
+
   const minimumDate = new Date();
   const maximumDate = new Date();
   maximumDate.setDate(minimumDate.getDate() + 14);
@@ -57,7 +68,9 @@ const DatePicker = () => {
             minDate={minimumDate}
             maxDate={maximumDate}
             dateFormat="dd.MM.yyyy"
+            dayClassName={(date) => highlightWeekends(date) || ''}
             customInput={<CustomDateInput value={formatDate(date)} onClick={() => { }} />}
+            locale="ru"
             wrapperClassName="react-datepicker-wrapper"
             popperPlacement="top"
           />
@@ -99,6 +112,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   dateField: {
+    width: '90%',
+    height: 50,
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#ddd',
+  },
+  dateFieldWeb: {
     width: '100%',
     height: 50,
     padding: 10,
@@ -114,18 +137,35 @@ const styles = StyleSheet.create({
   },
 });
 
-const customStyleSheet = document.styleSheets[0] || document.createElement('style');
-if (customStyleSheet instanceof CSSStyleSheet) {
-  customStyleSheet.insertRule(`
-    .react-datepicker-wrapper {
-      width: 100% !important;
-    }
-  `, customStyleSheet.cssRules.length);
-  customStyleSheet.insertRule(`
-    .r-width-e7q0ms {
-      align-self: center;
-    }
-  `, customStyleSheet.cssRules.length);
+if (Platform.OS === 'web') {
+  const customStyleSheet = document.styleSheets[0] || document.createElement('style');
+  if (customStyleSheet instanceof CSSStyleSheet) {
+    customStyleSheet.insertRule(
+      `.react-datepicker__month-container {
+        transition: transform 1s ease-in-out;
+      }`,
+      customStyleSheet.cssRules.length
+    );
+    customStyleSheet.insertRule(
+      `.weekend-day {
+        color: red !important;
+        font-weight: bold;
+      }`,
+      customStyleSheet.cssRules.length
+    );
+    customStyleSheet.insertRule(
+      `.react-datepicker-wrapper {
+        width: 100% !important;
+      }`,
+      customStyleSheet.cssRules.length
+    );
+    customStyleSheet.insertRule(
+      `.r-width-e7q0ms {
+        align-self: center;
+      }`,
+      customStyleSheet.cssRules.length
+    );
+  }
 }
 
 export default DatePicker;

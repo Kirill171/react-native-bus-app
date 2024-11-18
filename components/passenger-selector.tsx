@@ -57,6 +57,8 @@ const styles = StyleSheet.create({
     padding: 15,
     backgroundColor: '#ddd',
     alignItems: 'center',
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
   },
   clue: {
     position: 'absolute',
