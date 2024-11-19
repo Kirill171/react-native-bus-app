@@ -7,18 +7,18 @@ import { useDispatch } from 'react-redux';
 import { setDate } from '@/store/searchSlice';
 import 'react-datepicker/dist/react-datepicker.css';
 
-const CustomDateInput = forwardRef<TouchableOpacity, { value: string; onClick: () => void }>(
+const CustomDateInput = forwardRef<any, { value: string; onClick: () => void }>(
   ({ value, onClick }, ref) => (
     <TouchableOpacity onPress={onClick} ref={ref} style={styles.dateFieldWeb}>
       <Text style={styles.dateText}>{value}</Text>
-      <Text style={styles.clue}>Дата</Text>
+      <Text style={styles.clue}>Дата:</Text>
     </TouchableOpacity>
   )
 );
 
 registerLocale('ru', ru);
 
-const DatePicker = () => {
+export default function DatePicker() {
   const dispatch = useDispatch();
 
   const formatDate = (date: Date) => {
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   clue: {
     position: 'absolute',
     top: 5,
-    left: 5,
+    left: 10,
     color: 'gray',
     fontSize: 12,
   },
@@ -167,5 +167,3 @@ if (Platform.OS === 'web') {
     );
   }
 }
-
-export default DatePicker;

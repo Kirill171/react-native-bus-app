@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   clue: {
     position: 'absolute',
     top: 5,
-    left: 5,
+    left: 10,
     color: 'gray',
     fontSize: 12,
   },

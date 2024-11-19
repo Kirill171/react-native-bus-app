@@ -17,18 +17,25 @@ export default function ResultsScreen() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.item}>
-            <Text style={styles.itemText}>
-              {item.attributes.fromCity} - {item.attributes.toCity}
-            </Text>
-            <Text style={styles.itemText}>
-              {new Date(item.attributes.departureTime.iso).toLocaleString('ru-RU', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-              })}
-            </Text>
-            <Text style={styles.itemText}>Цена: {item.attributes.price} руб.</Text>
-            <Text style={styles.itemText}>Место водителя: {item.attributes.driverName}</Text>
+            <View style={styles.leftBlock} >
+              <Text style={styles.itemText}>
+                {new Date(item.attributes.departureTime.iso).toLocaleString('ru-RU', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </Text>
+              <Text>{item.attributes.fromCity}</Text>
+            </View>
+            <View style={styles.rightBlock} >
+              <Text style={styles.itemText}>
+                {new Date(item.attributes.arrivalTime.iso).toLocaleString('ru-RU', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </Text>
+              <Text>{item.attributes.toCity}</Text>
+              <Text style={styles.remainingSeats}>Свободно {item.attributes.remainingSeats} мест</Text>
+            </View>
           </View>
         )}
       />
@@ -42,6 +49,13 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#f4f4f4',
   },
+  leftBlock: {
+    width: '50%',
+  },
+  rightBlock: {
+    alignItems: 'flex-end',
+    width: '50%',
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -49,6 +63,9 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   item: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     padding: 15,
     backgroundColor: '#fff',
     borderRadius: 8,
@@ -60,7 +77,12 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   itemText: {
-    fontSize: 16,
-    color: '#555',
+    fontSize: 20,
+    color: 'black',
+    marginBottom: 5,
   },
+  remainingSeats: {
+    color: 'gray',
+    marginHorizontal: 5,
+  }
 });

@@ -12,7 +12,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 
 type RootStackParamList = {
     HomeScreen: undefined;
-    'Результаты-поиска': undefined;
+    'Результаты поиска': undefined;
 };
 
 export default function SearchButton() {
@@ -63,7 +63,7 @@ export default function SearchButton() {
 
         console.log(busTripsData);
         dispatch(setBusTripsData(busTripsData));
-        navigation.navigate('Результаты-поиска');
+        navigation.navigate('Результаты поиска');
         console.log(busTripsData[0].attributes.departureTime);
     };
     return (
@@ -94,9 +94,6 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         alignItems: 'center',
         justifyContent: 'center',
-        borderBottomWidth: 1,
-        borderBottomLeftRadius: 25,
-        borderBottomRightRadius: 25,
     },
     buttonText: {
         color: '#FFF',
