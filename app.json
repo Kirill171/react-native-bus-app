@@ -1,0 +1,59 @@
+{
+  "expo": {
+    "name": "Jetset",
+    "slug": "Jetset",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/bus-logo.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/bus-logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.bustripfinder",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/bus-logo.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.example.bustripfinder",
+      "versionCode": 1
+    },
+    "web": {
+      "favicon": "./assets/bus-logo.png"
+    },
+    "plugins": [
+      [
+        "expo-localization"
+      ],
+      [
+        "expo-image-picker"
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "your-project-id"
+      }
+    },
+    "newArchEnabled": true,
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ]
+  }
+}

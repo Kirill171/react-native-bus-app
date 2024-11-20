@@ -40,7 +40,6 @@ export default function RegisterForm() {
       dispatch(logIn({ username, email }));
     } catch (error) {
       setError('Ошибка при регистрации');
-      console.log(error);
     }
   };
 

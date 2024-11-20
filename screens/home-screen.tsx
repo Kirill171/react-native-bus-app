@@ -8,11 +8,11 @@ import { logOut } from '@/store/authSlice';
 import Parse from '@/config/parse-config';
 import CustomButton from '@/components/custom-button';
 import BackGroundImage from '@/assets/back-ground.jpg';
-import ModalSitySelector from '@/components/city-selector';
-import DatePicker from '@/components/date-picker';
+import ModalSitySelector from '@/components/search-params/city-selector';
+import DatePicker from '@/components/search-params/date-picker';
 import LogoView from '@/components/logo-view';
-import PassengerSelector from '@/components/passenger-selector';
-import SearchButton from '@/components/search-buttom';
+import PassengerSelector from '@/components/search-params/passenger-selector';
+import SearchButton from '@/components/search-params/search-buttom';
 
 export default function HomeScreene() {
   const dispatch = useDispatch();

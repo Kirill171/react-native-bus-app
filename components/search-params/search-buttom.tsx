@@ -11,21 +11,18 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 type RootStackParamList = {
-    HomeScreen: undefined;
+    'Поиск рейсов': undefined;
     'Результаты поиска': undefined;
 };
 
 export default function SearchButton() {
     const { fromCity, toCity, date, passengers, } = useSelector((state: RootState) => state.search);
     const dispatch = useDispatch();
-    const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'HomeScreen'>>();
+    const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Поиск рейсов'>>();
 
 
     const handlerSearch = async () => {
         const selectedDate = new Date(date);
-
-        const startOfDay = new Date(selectedDate);
-        startOfDay.setHours(0, 0, 0, 0);
 
         const endOfDay = new Date(selectedDate);
         endOfDay.setHours(23, 59, 59, 999);
@@ -33,7 +30,7 @@ export default function SearchButton() {
         const query = new Parse.Query('BusTrips');
         query.equalTo('fromCity', fromCity);
         query.equalTo('toCity', toCity);
-        query.greaterThanOrEqualTo('departureTime', startOfDay);
+        query.greaterThanOrEqualTo('departureTime', selectedDate);
         query.lessThanOrEqualTo('departureTime', endOfDay);
         query.greaterThanOrEqualTo('remainingSeats', passengers);
 
@@ -61,10 +58,8 @@ export default function SearchButton() {
             };
         });
 
-        console.log(busTripsData);
         dispatch(setBusTripsData(busTripsData));
         navigation.navigate('Результаты поиска');
-        console.log(busTripsData[0].attributes.departureTime);
     };
     return (
         <View style={styles.container}>

@@ -7,6 +7,8 @@ const initialState: SearchState = {
   date: new Date().toISOString(),
   passengers: 1,
   busTripsData: null,
+  busTripData: null,
+  busTripId: '',
 };
 
 const searchSlice = createSlice({
@@ -28,6 +30,12 @@ const searchSlice = createSlice({
     setBusTripsData: (state, action) => {
       state.busTripsData = action.payload;
     },
+    setBusTripData: (state, action) => {
+      state.busTripData = action.payload;
+    },
+    setBusTripId: (state, action) => {
+      state.busTripId = action.payload;
+    },
   },
 });
 
@@ -36,6 +44,8 @@ export const {
   setToCity,
   setDate,
   setPassengers,
-  setBusTripsData } = searchSlice.actions;
+  setBusTripsData,
+  setBusTripData,
+  setBusTripId } = searchSlice.actions;
 
 export default searchSlice.reducer;

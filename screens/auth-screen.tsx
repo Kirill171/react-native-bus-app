@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import LoginForm from '@/components/login-form';
-import RegisterForm from '@/components/register-form';
+import LoginForm from '@/components/register-forms/login-form';
+import RegisterForm from '@/components/register-forms/register-form';
 import CustomButton from '@/components/custom-button';
 
 export default function AuthScreene() {

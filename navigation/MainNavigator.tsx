@@ -7,44 +7,47 @@ import { RootState } from '@/store';
 
 import AuthScreen from '@/screens/auth-screen';
 import HomeScreen from '@/screens/home-screen';
-import OptionsScreen from '@/screens/tickets-screen';
+import TicketsScreen from '@/screens/tickets-screen';
 import ResultsScreen from '@/screens/results-screen';
+import TicketScreen from '@/screens/ticket-screen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-// Stack Navigator для вкладки "Поиск"
 function SearchStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Поиск"
+        name="Поиск рейсов"
         component={HomeScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Результаты поиска"
         component={ResultsScreen}
-        options={{ title: 'Результаты поиска' }}
+        options={{ title: 'Рейсы' }}
+      />
+      <Stack.Screen
+        name="Бронирование билета"
+        component={TicketScreen}
+        options={{ title: 'Бронирование билета' }}
       />
     </Stack.Navigator>
   );
 }
 
-// Stack Navigator для вкладки "Билеты"
 function TicketsStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Билеты"
-        component={OptionsScreen}
+        name="Мои билеты"
+        component={TicketsScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
 }
 
-// Основной Tab Navigator
 const MainTabs = React.memo(() => (
   <Tab.Navigator>
     <Tab.Screen
@@ -69,7 +72,6 @@ const MainTabs = React.memo(() => (
   </Tab.Navigator>
 ));
 
-// Основной навигатор приложения
 export default function MainNavigator() {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
