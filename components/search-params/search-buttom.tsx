@@ -22,6 +22,7 @@ export default function SearchButton() {
 
 
     const handlerSearch = async () => {
+        const toDay = new Date();
         const selectedDate = new Date(date);
 
         const endOfDay = new Date(selectedDate);
@@ -30,7 +31,7 @@ export default function SearchButton() {
         const query = new Parse.Query('BusTrips');
         query.equalTo('fromCity', fromCity);
         query.equalTo('toCity', toCity);
-        query.greaterThanOrEqualTo('departureTime', selectedDate);
+        query.greaterThanOrEqualTo('departureTime', toDay);
         query.lessThanOrEqualTo('departureTime', endOfDay);
         query.greaterThanOrEqualTo('remainingSeats', passengers);
 
