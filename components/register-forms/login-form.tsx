@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, useWindowDimensions } from 'react-native';
 import { useDispatch } from 'react-redux';
 import Parse from '@/config/parse-config';
 import { logIn } from '@/store/authSlice';
@@ -10,6 +10,7 @@ export default function LoginForm() {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const { width } = useWindowDimensions();
 
   const handleLogin = async () => {
     try {
@@ -22,8 +23,8 @@ export default function LoginForm() {
 
   return (
     <View style={styles.container}>
-      <TextInput style={styles.input} placeholder="Логин" placeholderTextColor={'black'} onChangeText={setUsername} />
-      <TextInput style={styles.input} placeholder="Пароль" secureTextEntry placeholderTextColor={'black'} onChangeText={setPassword} />
+      <TextInput style={[styles.input, {width: width > 700 ? '30%' : '90%'}]} placeholder="Логин" placeholderTextColor={'black'} onChangeText={setUsername} />
+      <TextInput style={[styles.input, {width: width > 700 ? '30%' : '90%'}]} placeholder="Пароль" secureTextEntry placeholderTextColor={'black'} onChangeText={setPassword} />
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <CustomButton title="Войти" onPress={handleLogin} />
     </View>

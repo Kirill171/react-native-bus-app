@@ -1,16 +1,20 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, GestureResponderEvent } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, GestureResponderEvent, useWindowDimensions } from 'react-native';
 
 interface CustomButtonProps {
   title: string;
   onPress: (event: GestureResponderEvent) => void;
 }
 
-const CustomButton: React.FC<CustomButtonProps> = ({ title, onPress }) => (
-  <TouchableOpacity style={styles.button} onPress={onPress}>
-    <Text style={styles.buttonText}>{title}</Text>
-  </TouchableOpacity>
-);
+export default function CustomButton({ title, onPress }: CustomButtonProps) {
+  const { width } = useWindowDimensions();
+
+  return (
+    <TouchableOpacity style={[styles.button, {width: width > 700 ? '30%' : '90%'}]} onPress={onPress}>
+      <Text style={styles.buttonText}>{title}</Text>
+    </TouchableOpacity>
+  );
+}
 
 const styles = StyleSheet.create({
   button: {
@@ -36,5 +40,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
-export default CustomButton;

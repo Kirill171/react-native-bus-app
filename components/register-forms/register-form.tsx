@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, useWindowDimensions } from 'react-native';
 import { useDispatch } from 'react-redux';
 import Parse from '@/config/parse-config';
 import { logIn } from '@/store/authSlice';
@@ -11,6 +11,7 @@ export default function RegisterForm() {
   const [password, setPassword] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const { width } = useWindowDimensions();
 
   const isValidUsername = (username: string) => /^[a-zA-Z]+$/.test(username);
   const isValidPassword = (password: string) => password.length >= 6;
@@ -45,9 +46,9 @@ export default function RegisterForm() {
 
   return (
     <View style={styles.container}>
-      <TextInput style={styles.input} placeholder="Логин" placeholderTextColor={'black'} onChangeText={setUsername} />
-      <TextInput style={styles.input} placeholder="Пароль" placeholderTextColor={'black'} secureTextEntry onChangeText={setPassword} />
-      <TextInput style={styles.input} placeholder="Email" placeholderTextColor={'black'} onChangeText={setEmail} />
+      <TextInput style={[styles.input, {width: width > 700 ? '30%' : '90%'}]} placeholder="Логин" placeholderTextColor={'black'} onChangeText={setUsername} />
+      <TextInput style={[styles.input, {width: width > 700 ? '30%' : '90%'}]} placeholder="Пароль" placeholderTextColor={'black'} secureTextEntry onChangeText={setPassword} />
+      <TextInput style={[styles.input, {width: width > 700 ? '30%' : '90%'}]} placeholder="Email" placeholderTextColor={'black'} onChangeText={setEmail} />
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <CustomButton title="Создать аккаунт" onPress={handleRegister} />
     </View>
