@@ -1,18 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Fontisto } from '@expo/vector-icons';
 import { RootState } from '@/store';
+import Parse from 'parse/react-native';
 
 import AuthScreen from '@/screens/auth-screen';
 import HomeScreen from '@/screens/home-screen';
-import TicketsScreen from '@/screens/tickets-screen';
+import BookedScreen from '@/screens/booked-screen';
 import ResultsScreen from '@/screens/results-screen';
-import TicketScreen from '@/screens/ticket-screen';
+import BookingScreen from '@/screens/booking-screen';
+import UsersScreen from '@/screens/user-screen';
+import TripsScreen from '@/screens/trips-screen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+
+interface Role {
+  get: (key: string) => any;
+}
 
 function SearchStack() {
   return (
@@ -29,48 +36,107 @@ function SearchStack() {
       />
       <Stack.Screen
         name="Бронирование билета"
-        component={TicketScreen}
+        component={BookingScreen}
         options={{ title: 'Бронирование билета' }}
       />
     </Stack.Navigator>
   );
 }
 
-function TicketsStack() {
+function BookedStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
         name="Мои билеты"
-        component={TicketsScreen}
+        component={BookedScreen}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Бронирование билета"
+        component={BookingScreen}
+        options={{ title: 'Бронирование билета', headerBackTitle: 'Назад' }}
       />
     </Stack.Navigator>
   );
 }
 
-const MainTabs = React.memo(() => (
-  <Tab.Navigator>
-    <Tab.Screen
-      name="Поиск"
-      component={SearchStack}
-      options={{
-        headerShown: false,
-        tabBarIcon: ({ color }) => (
-          <Fontisto name="search" size={24} color={color} />
-        ),
-      }}
-    />
-    <Tab.Screen
-      name="Билеты"
-      component={TicketsStack}
-      options={{
-        tabBarIcon: ({ color }) => (
-          <Fontisto name="bus-ticket" size={24} color={color} />
-        ),
-      }}
-    />
-  </Tab.Navigator>
-));
+const MainTabs = React.memo(() => {
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkRoles = async () => {
+      try {
+        const currentUser = await Parse.User.currentAsync();
+
+        if (currentUser) {
+          const rolesQuery = new Parse.Query('_Role');
+          rolesQuery.equalTo('users', currentUser);
+          const roles = await rolesQuery.find();
+          console.log(roles);
+
+
+          const superAdminRole = roles.find(role => role.get('name') === 'Super Admin');
+
+          if (superAdminRole) {
+            setIsSuperAdmin(true);
+          }
+        }
+      } catch (error) {
+        console.error('Ошибка при получении ролей пользователя:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkRoles();
+  }, []);
+
+  if (loading) {
+    return null;
+  }
+
+  return (
+    <Tab.Navigator>
+      <Tab.Screen
+        name="Поиск"
+        component={SearchStack}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => <Fontisto name="search" size={24} color={color} />,
+        }}
+      />
+      <Tab.Screen
+        name="Билеты"
+        component={BookedStack}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => <Fontisto name="bus-ticket" size={24} color={color} />,
+        }}
+      />
+      {isSuperAdmin && (
+        <>
+          <Tab.Screen
+            name="Рейсы"
+            component={TripsScreen}
+            options={{
+              headerShown: false,
+              tabBarIcon: ({ color }) => <Fontisto name="plane" size={24} color={color} />,
+            }}
+          />
+          <Tab.Screen
+            name="Пользователи"
+            component={UsersScreen}
+            options={{
+              headerShown: false,
+              tabBarIcon: ({ color }) => <Fontisto name="person" size={24} color={color} />,
+            }}
+          />
+        </>
+      )}
+    </Tab.Navigator>
+  );
+});
 
 export default function MainNavigator() {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);

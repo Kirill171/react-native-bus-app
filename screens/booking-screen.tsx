@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, useWindowDimensions, SafeAreaView, TouchableOpacity, Linking, Alert } from 'react-native';
 import { RootState } from '@/store';
 import { useSelector } from 'react-redux';
 import CustomButton from '@/components/custom-button';
 import Parse from '@/config/parse-config';
+import { useFocusEffect } from '@react-navigation/native';
 
 
-export default function TicketScreen() {
+export default function BookingScreen() {
   const { busTripData, busTripId } = useSelector((state: RootState) => state.search);
   const { width } = useWindowDimensions();
   const [isBooked, setIsBooked] = useState(false);
@@ -19,38 +20,47 @@ export default function TicketScreen() {
     }
   };
 
-  useEffect(() => {
-    const checkBookingStatus = async () => {
-      try {
-        const currentUser = Parse.User.current();
-        if (!currentUser) {
-          console.warn("Нет авторизованного пользователя");
+  useFocusEffect(
+    React.useCallback(() => {
+      const checkBookingStatus = async () => {
+        const currentUser = await Parse.User.currentAsync();
+        if (!currentUser || !busTripId) {
+          console.warn('Нет авторизованного пользователя или ID рейса');
           return;
         }
 
-        if (!busTripId) {
-          console.warn("Нет ID рейса");
-          return;
-        }
+        const User = Parse.Object.extend('User');
+        const BusTrip = Parse.Object.extend('BusTrips');
 
-        const Booking = Parse.Object.extend("Bookings");
-        const query = new Parse.Query(Booking);
-        query.equalTo("userId", currentUser);
-        query.equalTo("busTripId", busTripId);
+        const userPointer = new User();
+        userPointer.id = currentUser.id;
 
-        const booking = await query.first();
-        setIsBooked(!!booking);
-      } catch (error) {
-        console.error("Ошибка при проверке бронирования:", error);
-      }
-    };
+        const busTripPointer = new BusTrip();
+        busTripPointer.id = busTripId;
 
-    checkBookingStatus();
-  }, [busTripId]);
+        const query = new Parse.Query('Bookings');
+        query.equalTo('userId', userPointer);
+        query.equalTo('busTripId', busTripPointer);
+
+        query.first()
+          .then((booking) => {
+            setIsBooked(!!booking);
+          })
+          .catch((error) => {
+            console.error('Ошибка при проверке бронирования:', error);
+          });
+
+      };
+
+      checkBookingStatus();
+    }, [busTripId])
+  );
+
+
 
   const handleBooking = async () => {
     try {
-      const currentUser = Parse.User.current();
+      const currentUser = Parse.User.currentAsync();
       if (!currentUser) {
         Alert.alert("Ошибка", "Пользователь не авторизован");
         return;

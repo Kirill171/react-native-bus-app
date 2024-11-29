@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, useWindowDimensions, SafeAreaView, TouchableOpacity } from 'react-native';
 import { RootState } from '@/store';
 import { useSelector } from 'react-redux';
 import Parse from '@/config/parse-config';
+import { useFocusEffect } from '@react-navigation/native';
 
 import BusTripData from '@/types/bus-trip-data';
 import Attributes from '@/types/attributes';
@@ -19,14 +20,14 @@ type RootStackParamList = {
 };
 
 
-export default function TicketsScreen() {
+export default function BookedScreen() {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Мои билеты'>>();
   const { busTripsData } = useSelector((state: RootState) => state.search);
   const busTripsArray: BusTripData[] = busTripsData ? busTripsData : [];
   const { width } = useWindowDimensions();
   const dispatch = useDispatch();
   const [bookedTrips, setBookedTrips] = useState<BusTripData[]>([]);
-  
+
   function navigateToTicketScreen(busTripData: Attributes, busTripId: string) {
     navigation.navigate('Бронирование билета');
     dispatch(setBusTripData(busTripData));
@@ -40,14 +41,12 @@ export default function TicketsScreen() {
         console.error("Пользователь не авторизован");
         return;
       }
-      console.log(currentUser);
-      
+
       const Booking = Parse.Object.extend("Bookings");
       const bookingQuery = new Parse.Query(Booking);
       bookingQuery.equalTo("userId", currentUser);
 
       const bookingResults = await bookingQuery.find();
-      console.log("Бронирования пользователя:", bookingResults);
 
       const busTripIds = bookingResults.map((booking) => booking.get("busTripId").id);
 
@@ -56,7 +55,6 @@ export default function TicketsScreen() {
       busTripQuery.containedIn("objectId", busTripIds);
 
       const busTripResults = await busTripQuery.find();
-      console.log("Данные рейсов:", busTripResults);
 
       const formattedTrips: BusTripData[] = busTripResults.map((trip) => ({
         id: trip.id,
@@ -64,9 +62,9 @@ export default function TicketsScreen() {
         attributes: {
           fromCity: trip.get("fromCity") || "Неизвестно",
           toCity: trip.get("toCity") || "Неизвестно",
-          date: trip.get("departureTime") || { iso: new Date().toISOString() },
-          departureTime: trip.get("departureTime") || { iso: new Date().toISOString() },
-          arrivalTime: trip.get("arrivalTime") || { iso: new Date().toISOString() },
+          date: { iso: trip.get("departureTime").toISOString() },
+          departureTime: { iso: trip.get("departureTime").toISOString() },
+          arrivalTime: { iso: trip.get("arrivalTime").toISOString() },
           totalSeats: trip.get("totalSeats") || 0,
           remainingSeats: trip.get("remainingSeats") || 0,
           price: trip.get("price") || 0,
@@ -84,15 +82,17 @@ export default function TicketsScreen() {
     }
   };
 
-  useEffect(() => {
-    fetchBookedTrips();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchBookedTrips();
+    }, [])
+  );
 
   return (
-    <SafeAreaView style={[styles.container, { width: width > 700 ? '60%' : '100%' }]}>
+    <SafeAreaView style={[styles.container, { width: width > 700 ? '40%' : '100%' }]}>
       <Text style={styles.title}>Ваши билеты:</Text>
       <FlatList
-        data={busTripsArray}
+        data={bookedTrips}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.item}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import Parse from '@/config/parse-config';
@@ -18,6 +18,7 @@ type RootStackParamList = {
 export default function SearchButton() {
     const { fromCity, toCity, date, passengers, } = useSelector((state: RootState) => state.search);
     const dispatch = useDispatch();
+    const { width } = useWindowDimensions();
     const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Поиск рейсов'>>();
 
 
@@ -64,7 +65,7 @@ export default function SearchButton() {
     };
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.button} onPress={handlerSearch}>
+            <TouchableOpacity style={[styles.button, { width: width > 700 ? '30%' : '90%' }]} onPress={handlerSearch}>
                 <Text style={styles.buttonText}>Найти</Text>
             </TouchableOpacity>
         </View>

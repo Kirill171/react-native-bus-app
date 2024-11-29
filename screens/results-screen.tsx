@@ -31,7 +31,7 @@ export default function ResultsScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { width: width > 700 ? '60%' : '100%' }]}>
+    <SafeAreaView style={[styles.container, { width: width > 700 ? '40%' : '100%' }]}>
       <Text style={styles.title}>Результаты поиска:</Text>
       <FlatList
         data={busTripsArray}

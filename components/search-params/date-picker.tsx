@@ -101,8 +101,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   webContainer: {
+    alignSelf: 'center',
     alignItems: 'center',
-    width: '90%',
+    width: '30%',
   },
   clue: {
     position: 'absolute',
@@ -156,12 +157,6 @@ if (Platform.OS === 'web') {
     customStyleSheet.insertRule(
       `.react-datepicker-wrapper {
         width: 100% !important;
-      }`,
-      customStyleSheet.cssRules.length
-    );
-    customStyleSheet.insertRule(
-      `.r-width-e7q0ms {
-        align-self: center;
       }`,
       customStyleSheet.cssRules.length
     );

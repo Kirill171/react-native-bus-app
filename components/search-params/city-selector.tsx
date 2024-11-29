@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, StyleSheet, useWindowDimensions } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { setFromCity, setToCity } from '@/store/searchSlice';
 
@@ -10,6 +10,7 @@ interface ModalCitySelectorProps {
 
 const ModalCitySelector = ({ clue, isFromCity }: ModalCitySelectorProps) => {
   const dispatch = useDispatch();
+  const { width } = useWindowDimensions();
   const [selectedCity, setSelectedCity] = useState('Выберите город');
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -27,14 +28,14 @@ const ModalCitySelector = ({ clue, isFromCity }: ModalCitySelectorProps) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.selector}>
+      <TouchableOpacity onPress={() => setModalVisible(true)} style={[styles.selector, { width: width > 700 ? '30%' : '90%' }]}>
         <Text style={styles.clue}>{clue}</Text>
         <Text style={styles.cityText}>{selectedCity}</Text>
       </TouchableOpacity>
 
       <Modal visible={modalVisible} transparent animationType="slide">
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
+          <View style={[styles.modalContent, { width: width > 700 ? '30%' : '90%' }]}>
             {cities.map((city) => (
               <TouchableOpacity key={city} onPress={() => selectCity(city)} style={styles.optionButton}>
                 <Text style={styles.optionText}>{city}</Text>
@@ -79,6 +80,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
+    alignSelf: 'center',
+    width: '90%',
     margin: 20,
     padding: 20,
     backgroundColor: 'white',

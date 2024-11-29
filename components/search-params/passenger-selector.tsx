@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, StyleSheet, useWindowDimensions } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { setPassengers } from '@/store/searchSlice';
 
 const PassengerSelector = () => {
   const dispatch = useDispatch();
+  const { width } = useWindowDimensions();
   const [passengerCount, setPassengerCount] = useState(1);
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -25,14 +26,14 @@ const PassengerSelector = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={openModal} style={styles.selector}>
+      <TouchableOpacity onPress={openModal} style={[styles.selector, { width: width > 700 ? '30%' : '90%' }]}>
         <Text style={styles.clue}>Пассажиры:</Text>
         <Text style={styles.countText}>{getPassengerText(passengerCount)}</Text>
       </TouchableOpacity>
 
       <Modal visible={isModalVisible} transparent animationType="slide">
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
+          <View style={[styles.modalContent, { width: width > 700 ? '30%' : '90%' }]}>
             {[1, 2, 3, 4, 5].map((count) => (
               <TouchableOpacity key={count} onPress={() => handleSelect(count)} style={styles.optionButton}>
                 <Text style={styles.optionText}>{getPassengerText(count)}</Text>
@@ -77,6 +78,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
+    width: '90%',
+    alignSelf: 'center',
     margin: 20,
     padding: 20,
     backgroundColor: 'white',
