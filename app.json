@@ -28,7 +28,8 @@
       "versionCode": 1
     },
     "web": {
-      "favicon": "./assets/bus-logo.png"
+      "favicon": "./assets/bus-logo.png",
+      "port": 3000
     },
     "plugins": [
       [

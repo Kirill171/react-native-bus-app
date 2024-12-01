@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, ScrollView, StyleSheet, useWindowDimensions, SafeAreaView, TouchableOpacity, Linking, Alert } from 'react-native';
 import { RootState } from '@/store';
 import { useSelector } from 'react-redux';
@@ -6,18 +6,22 @@ import CustomButton from '@/components/custom-button';
 import Parse from '@/config/parse-config';
 import { useFocusEffect } from '@react-navigation/native';
 
-
 export default function BookingScreen() {
   const { busTripData, busTripId } = useSelector((state: RootState) => state.search);
   const { width } = useWindowDimensions();
   const [isBooked, setIsBooked] = useState(false);
   const [remainingSeats, setRemainingSeats] = useState(busTripData?.remainingSeats || 0);
+  const [scrollOffset, setScrollOffset] = useState(0); // Сохраняем текущую позицию прокрутки
 
   const handlePhoneCall = (phoneNumber: string | undefined) => {
     if (phoneNumber) {
       const phoneUrl = `tel:${phoneNumber}`;
       Linking.openURL(phoneUrl);
     }
+  };
+
+  const handleScroll = (event: any) => {
+    setScrollOffset(event.nativeEvent.contentOffset.y); // Сохраняем позицию прокрутки
   };
 
   useFocusEffect(
@@ -56,11 +60,9 @@ export default function BookingScreen() {
     }, [busTripId])
   );
 
-
-
   const handleBooking = async () => {
     try {
-      const currentUser = Parse.User.currentAsync();
+      const currentUser = await Parse.User.currentAsync();
       if (!currentUser) {
         Alert.alert("Ошибка", "Пользователь не авторизован");
         return;
@@ -120,11 +122,14 @@ export default function BookingScreen() {
     }
   };
 
-
-
   return (
-    <SafeAreaView style={[styles.container, { width: width > 700 ? '60%' : '100%' }]}>
-      <ScrollView>
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        contentContainerStyle={[styles.scrollContainer, { width: width > 700 ? '60%' : '100%' }]}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        contentOffset={{ x: 0, y: scrollOffset }}
+      >
         <View style={styles.block}>
           <View style={styles.row}>
             <Text style={styles.labelText}>Отправка через</Text>
@@ -162,13 +167,11 @@ export default function BookingScreen() {
             <Text style={styles.valueText}>Отправка в: {busTripData?.departureTime.iso ? new Date(busTripData?.departureTime.iso).toLocaleString('ru-RU', {
               hour: '2-digit',
               minute: '2-digit',
-            }) : 'Не известно'}
-            </Text>
+            }) : 'Не известно'}</Text>
             <Text style={styles.valueText}>Прибытие в: {busTripData?.arrivalTime.iso ? new Date(busTripData?.arrivalTime.iso).toLocaleString('ru-RU', {
               hour: '2-digit',
               minute: '2-digit',
-            }) : 'Не известно'}
-            </Text>
+            }) : 'Не известно'}</Text>
           </View>
 
           <View style={styles.line}></View>
@@ -241,37 +244,35 @@ export default function BookingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-    alignSelf: 'center',
-    marginVertical: 20,
     backgroundColor: '#f4f4f4',
   },
+  scrollContainer: {
+    flexGrow: 1,
+  },
   block: {
+    padding: 10,
+    marginBottom: 10,
     backgroundColor: 'white',
-    width: '100%',
-    marginBottom: 20,
+    borderRadius: 8,
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 20,
-    fontSize: 18,
+    marginBottom: 5,
   },
   labelText: {
-    fontSize: 16,
-    color: 'gray',
+    fontWeight: 'bold',
   },
   valueText: {
     fontSize: 16,
   },
-  valuePhoneText: {
-    fontSize: 16,
-    color: 'blue',
-    textDecorationLine: 'underline',
-  },
   line: {
-    height: 1,
-    backgroundColor: 'gray',
-    marginHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    marginVertical: 5,
+  },
+  valuePhoneText: {
+    color: '#0066cc',
+    textDecorationLine: 'underline',
   },
 });

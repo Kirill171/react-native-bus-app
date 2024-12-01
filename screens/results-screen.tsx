@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, useWindowDimensions, SafeAreaView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, useWindowDimensions, SafeAreaView, TouchableOpacity } from 'react-native';
 import { RootState } from '@/store';
 import { useSelector } from 'react-redux';
 
@@ -31,16 +31,13 @@ export default function ResultsScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { width: width > 700 ? '40%' : '100%' }]}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={[styles.container, { width: width > 700 ? '40%' : '90%' }]}>
       <Text style={styles.title}>Результаты поиска:</Text>
-      <FlatList
-        data={busTripsArray}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
+        {busTripsArray.map((item) => (
+          <View key={item.id} style={styles.item}>
             <View style={styles.row}>
-
-              <View style={styles.leftBlock} >
+              <View style={styles.leftBlock}>
                 <View style={styles.timeAndDateContainer}>
                   <Text style={styles.timeText}>
                     {new Date(item.attributes.departureTime.iso).toLocaleString('ru-RU', {
@@ -49,7 +46,7 @@ export default function ResultsScreen() {
                     })}
                   </Text>
                   <Text style={styles.dateText}>
-                    {new Date(item.attributes.departureTime.iso).toLocaleString('ru-Ru', {
+                    {new Date(item.attributes.departureTime.iso).toLocaleString('ru-RU', {
                       day: '2-digit',
                       month: 'long',
                       weekday: 'short',
@@ -59,7 +56,7 @@ export default function ResultsScreen() {
                 <Text style={styles.cityText}>{item.attributes.fromCity}</Text>
               </View>
 
-              <View style={styles.rightBlock} >
+              <View style={styles.rightBlock}>
                 <Text style={styles.timeText}>
                   {new Date(item.attributes.arrivalTime.iso).toLocaleString('ru-RU', {
                     hour: '2-digit',
@@ -82,26 +79,26 @@ export default function ResultsScreen() {
               </View>
             </View>
           </View>
-        )}
-      />
+        ))}
+      </ScrollView>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
     alignSelf: 'center',
     backgroundColor: '#f4f4f4',
   },
   title: {
-    margin: 20,
+    marginVertical: 20,
     fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
   },
   item: {
-    marginHorizontal: 20,
     marginVertical: 15,
     padding: 15,
     backgroundColor: '#fff',
@@ -111,6 +108,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 3,
+    width: '100%',
   },
   leftBlock: {
     width: '50%',
@@ -168,5 +166,5 @@ const styles = StyleSheet.create({
   },
   column: {
     flexDirection: 'column',
-  }
+  },
 });
