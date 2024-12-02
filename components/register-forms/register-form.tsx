@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import Parse from '@/config/parse-config';
 import { logIn } from '@/store/authSlice';
 import CustomButton from '@/components/custom-button';
+import FloatingLabelInput from '@/components/floating-label-input';
 
 export default function RegisterForm() {
   const dispatch = useDispatch();
@@ -38,6 +39,17 @@ export default function RegisterForm() {
 
     try {
       await user.signUp();
+
+      const acl = new Parse.ACL();
+      acl.setReadAccess(user.id, true);
+      acl.setWriteAccess(user.id, true);
+
+      acl.setRoleReadAccess('Super Admin', true);
+      acl.setRoleWriteAccess('Super Admin', true);
+
+      user.setACL(acl);
+      await user.save();
+
       dispatch(logIn({ username, email }));
     } catch (error) {
       setError('Ошибка при регистрации');
@@ -46,9 +58,25 @@ export default function RegisterForm() {
 
   return (
     <View style={styles.container}>
-      <TextInput style={[styles.input, {width: width > 700 ? '30%' : '90%'}]} placeholder="Логин" placeholderTextColor={'black'} onChangeText={setUsername} />
-      <TextInput style={[styles.input, {width: width > 700 ? '30%' : '90%'}]} placeholder="Пароль" placeholderTextColor={'black'} secureTextEntry onChangeText={setPassword} />
-      <TextInput style={[styles.input, {width: width > 700 ? '30%' : '90%'}]} placeholder="Email" placeholderTextColor={'black'} onChangeText={setEmail} />
+      <FloatingLabelInput
+        label="Логин"
+        value={username}
+        onChangeText={setUsername}
+        style={{ width: width > 700 ? '30%' : '90%' }}
+      />
+      <FloatingLabelInput
+        label="Пароль"
+        value={password}
+        onChangeText={setPassword}
+        isPassword={true}
+        style={{ width: width > 700 ? '30%' : '90%' }}
+      />
+      <FloatingLabelInput
+        label="Email"
+        value={email}
+        onChangeText={setEmail}
+        style={{ width: width > 700 ? '30%' : '90%' }}
+      />
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <CustomButton title="Создать аккаунт" onPress={handleRegister} />
     </View>

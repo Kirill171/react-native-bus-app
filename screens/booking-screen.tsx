@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { View, Text, ScrollView, StyleSheet, useWindowDimensions, SafeAreaView, TouchableOpacity, Linking, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, StyleSheet, useWindowDimensions, TouchableOpacity, Linking, Alert, SafeAreaView } from 'react-native';
 import { RootState } from '@/store';
 import { useSelector } from 'react-redux';
 import CustomButton from '@/components/custom-button';
@@ -11,17 +11,12 @@ export default function BookingScreen() {
   const { width } = useWindowDimensions();
   const [isBooked, setIsBooked] = useState(false);
   const [remainingSeats, setRemainingSeats] = useState(busTripData?.remainingSeats || 0);
-  const [scrollOffset, setScrollOffset] = useState(0); // Сохраняем текущую позицию прокрутки
 
   const handlePhoneCall = (phoneNumber: string | undefined) => {
     if (phoneNumber) {
       const phoneUrl = `tel:${phoneNumber}`;
       Linking.openURL(phoneUrl);
     }
-  };
-
-  const handleScroll = (event: any) => {
-    setScrollOffset(event.nativeEvent.contentOffset.y); // Сохраняем позицию прокрутки
   };
 
   useFocusEffect(
@@ -79,8 +74,15 @@ export default function BookingScreen() {
 
       const Booking = Parse.Object.extend("Bookings");
       const queryBooking = new Parse.Query(Booking);
-      queryBooking.equalTo("userId", currentUser);
-      queryBooking.equalTo("busTripId", busTrip);
+
+      const userPointer = new Parse.User();
+      userPointer.id = currentUser.id;
+
+      const busTripPointer = new Parse.Object("BusTrips");
+      busTripPointer.id = busTripId;
+
+      queryBooking.equalTo("userId", userPointer);
+      queryBooking.equalTo("busTripId", busTripPointer);
 
       const booking = await queryBooking.first();
 
@@ -91,8 +93,8 @@ export default function BookingScreen() {
         }
 
         const newBooking = new Booking();
-        newBooking.set("userId", currentUser);
-        newBooking.set("busTripId", busTrip);
+        newBooking.set("userId", userPointer);
+        newBooking.set("busTripId", busTripPointer);
         await newBooking.save();
 
         busTrip.set("remainingSeats", remainingSeats - 1);
@@ -124,12 +126,7 @@ export default function BookingScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={[styles.scrollContainer, { width: width > 700 ? '60%' : '100%' }]}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        contentOffset={{ x: 0, y: scrollOffset }}
-      >
+      <ScrollView contentContainerStyle={[styles.scrollContainer, { width: width > 700 ? '60%' : '100%', }]}>
         <View style={styles.block}>
           <View style={styles.row}>
             <Text style={styles.labelText}>Отправка через</Text>
@@ -230,10 +227,12 @@ export default function BookingScreen() {
           </View>
         </View>
 
-        <View style={{ alignItems: 'center' }}>
+        <View style={{ alignItems: 'center', }}>
           <CustomButton
             title={isBooked ? 'Разбронировать' : 'Забронировать'}
             onPress={handleBooking}
+            webWidth={'100%'}
+            phoneWidth={'90%'}
           />
         </View>
       </ScrollView>
@@ -247,32 +246,35 @@ const styles = StyleSheet.create({
     backgroundColor: '#f4f4f4',
   },
   scrollContainer: {
-    flexGrow: 1,
+    paddingVertical: 20,
+    alignSelf: 'center',
   },
   block: {
-    padding: 10,
-    marginBottom: 10,
     backgroundColor: 'white',
-    borderRadius: 8,
+    width: '100%',
+    marginBottom: 20,
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 5,
+    padding: 20,
+    fontSize: 18,
   },
   labelText: {
-    fontWeight: 'bold',
+    fontSize: 16,
+    color: 'gray',
   },
   valueText: {
     fontSize: 16,
   },
-  line: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-    marginVertical: 5,
-  },
   valuePhoneText: {
-    color: '#0066cc',
+    fontSize: 16,
+    color: 'blue',
     textDecorationLine: 'underline',
+  },
+  line: {
+    height: 1,
+    backgroundColor: 'gray',
+    marginHorizontal: 20,
   },
 });

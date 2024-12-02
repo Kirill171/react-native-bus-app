@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, useWindowDimensions, SafeAreaView, TouchableOpacity } from 'react-native';
-import { RootState } from '@/store';
-import { useSelector } from 'react-redux';
+import { View, Text, ScrollView, StyleSheet, useWindowDimensions, TouchableOpacity } from 'react-native';
 import Parse from '@/config/parse-config';
 import { useFocusEffect } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import BusTripData from '@/types/bus-trip-data';
 import Attributes from '@/types/attributes';
@@ -21,8 +20,6 @@ type RootStackParamList = {
 
 export default function BookedScreen() {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Мои билеты'>>();
-  const { busTripsData } = useSelector((state: RootState) => state.search);
-  const busTripsArray: BusTripData[] = busTripsData ? busTripsData : [];
   const { width } = useWindowDimensions();
   const dispatch = useDispatch();
   const [bookedTrips, setBookedTrips] = useState<BusTripData[]>([]);
@@ -90,7 +87,7 @@ export default function BookedScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={[styles.container, { width: width > 700 ? '40%' : '90%' }]}>
-      <Text style={styles.title}>Ваши билеты:</Text>
+        <Text style={styles.title}>Ваши билеты:</Text>
         {bookedTrips.map((item) => (
           <View key={item.id} style={styles.item}>
             <View style={styles.row}>

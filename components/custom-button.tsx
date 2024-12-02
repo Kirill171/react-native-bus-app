@@ -1,16 +1,24 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, GestureResponderEvent, useWindowDimensions } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, GestureResponderEvent, useWindowDimensions, ViewStyle } from 'react-native';
 
 interface CustomButtonProps {
   title: string;
   onPress: (event: GestureResponderEvent) => void;
+  webWidth?: string | number,
+  phoneWidth?: string | number,
 }
 
-export default function CustomButton({ title, onPress }: CustomButtonProps) {
+export default function CustomButton({ title, onPress, webWidth, phoneWidth }: CustomButtonProps) {
   const { width } = useWindowDimensions();
+  let buttonWidth: string | number;
+
+  buttonWidth = (width > 700 ? '30%' : '90%');
+  if (webWidth && phoneWidth) {
+    buttonWidth = (width > 700 ? webWidth : phoneWidth)
+  }
 
   return (
-    <TouchableOpacity style={[styles.button, {width: width > 700 ? '30%' : '90%'}]} onPress={onPress}>
+    <TouchableOpacity style={[styles.button, { width: buttonWidth as ViewStyle['width'] }]} onPress={onPress}>
       <Text style={styles.buttonText}>{title}</Text>
     </TouchableOpacity>
   );
@@ -18,7 +26,6 @@ export default function CustomButton({ title, onPress }: CustomButtonProps) {
 
 const styles = StyleSheet.create({
   button: {
-    width: '90%',
     height: 50,
     marginTop: 10,
     paddingVertical: 10,

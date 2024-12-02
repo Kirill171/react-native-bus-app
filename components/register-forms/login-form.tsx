@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import Parse from '@/config/parse-config';
 import { logIn } from '@/store/authSlice';
 import CustomButton from '@/components/custom-button';
+import FloatingLabelInput from '@/components/floating-label-input';
 
 export default function LoginForm() {
   const dispatch = useDispatch();
@@ -23,8 +24,19 @@ export default function LoginForm() {
 
   return (
     <View style={styles.container}>
-      <TextInput style={[styles.input, {width: width > 700 ? '30%' : '90%'}]} placeholder="Логин" placeholderTextColor={'black'} onChangeText={setUsername} />
-      <TextInput style={[styles.input, {width: width > 700 ? '30%' : '90%'}]} placeholder="Пароль" secureTextEntry placeholderTextColor={'black'} onChangeText={setPassword} />
+      <FloatingLabelInput
+        label="Логин"
+        value={username}
+        onChangeText={setUsername}
+        style={{ width: width > 700 ? '30%' : '90%' }}
+      />
+      <FloatingLabelInput
+        label="Пароль"
+        value={password}
+        onChangeText={setPassword}
+        isPassword={true}
+        style={{ width: width > 700 ? '30%' : '90%' }}
+      />
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <CustomButton title="Войти" onPress={handleLogin} />
     </View>

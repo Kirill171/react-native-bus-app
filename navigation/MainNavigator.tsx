@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Fontisto } from '@expo/vector-icons';
 import { RootState } from '@/store';
 import Parse from 'parse/react-native';
+import { ActivityIndicator, View } from 'react-native';
 
 import AuthScreen from '@/screens/auth-screen';
 import HomeScreen from '@/screens/home-screen';
@@ -62,6 +63,7 @@ function BookedStack() {
 
 const MainTabs = React.memo(() => {
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -73,14 +75,9 @@ const MainTabs = React.memo(() => {
           const rolesQuery = new Parse.Query('_Role');
           rolesQuery.equalTo('users', currentUser);
           const roles = await rolesQuery.find();
-          console.log(roles);
 
-
-          const superAdminRole = roles.find(role => role.get('name') === 'Super Admin');
-
-          if (superAdminRole) {
-            setIsSuperAdmin(true);
-          }
+          setIsSuperAdmin(roles.some(role => role.get('name') === 'Super Admin'));
+          setIsAdmin(roles.some(role => role.get('name') === 'Admin'));
         }
       } catch (error) {
         console.error('Ошибка при получении ролей пользователя:', error);
@@ -92,8 +89,13 @@ const MainTabs = React.memo(() => {
     checkRoles();
   }, []);
 
+
   if (loading) {
-    return null;
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#4CAF50" />
+      </View>
+    );
   }
 
   return (
@@ -114,25 +116,25 @@ const MainTabs = React.memo(() => {
           tabBarIcon: ({ color }) => <Fontisto name="bus-ticket" size={24} color={color} />,
         }}
       />
+      {(isSuperAdmin || isAdmin) && (
+        <Tab.Screen
+          name="Рейсы"
+          component={TripsScreen}
+          options={{
+            headerShown: false,
+            tabBarIcon: ({ color }) => <Fontisto name="plane" size={24} color={color} />,
+          }}
+        />
+      )}
       {isSuperAdmin && (
-        <>
-          <Tab.Screen
-            name="Рейсы"
-            component={TripsScreen}
-            options={{
-              headerShown: false,
-              tabBarIcon: ({ color }) => <Fontisto name="plane" size={24} color={color} />,
-            }}
-          />
-          <Tab.Screen
-            name="Пользователи"
-            component={UsersScreen}
-            options={{
-              headerShown: false,
-              tabBarIcon: ({ color }) => <Fontisto name="person" size={24} color={color} />,
-            }}
-          />
-        </>
+        <Tab.Screen
+          name="Пользователи"
+          component={UsersScreen}
+          options={{
+            headerShown: false,
+            tabBarIcon: ({ color }) => <Fontisto name="person" size={24} color={color} />,
+          }}
+        />
       )}
     </Tab.Navigator>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, ImageBackground, } from 'react-native';
+import { StyleSheet, ImageBackground, Platform, } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
