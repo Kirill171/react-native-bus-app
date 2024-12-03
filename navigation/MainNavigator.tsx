@@ -14,13 +14,10 @@ import ResultsScreen from '@/screens/results-screen';
 import BookingScreen from '@/screens/booking-screen';
 import UsersScreen from '@/screens/user-screen';
 import TripsScreen from '@/screens/trips-screen';
+import ProfileScreen from '@/screens/profile-screen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-
-interface Role {
-  get: (key: string) => any;
-}
 
 function SearchStack() {
   return (
@@ -114,6 +111,14 @@ const MainTabs = React.memo(() => {
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) => <Fontisto name="bus-ticket" size={24} color={color} />,
+        }}
+      />
+      <Tab.Screen
+        name="Профиль"
+        component={ProfileScreen}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => <Fontisto name="person" size={24} color={color} />,
         }}
       />
       {(isSuperAdmin || isAdmin) && (
