@@ -85,6 +85,7 @@ const TripsForm: React.FC<TripsFormProps> = ({ initialData, onSave, onCancel }) 
         const typedKey = key as keyof FormData;
         return (
           <TextInput
+            placeholderTextColor={'gray'}
             key={typedKey}
             style={styles.input}
             placeholder={typedKey}
