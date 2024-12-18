@@ -72,7 +72,7 @@ export default function RegisterForm() {
         style={{ width: width > 700 ? '30%' : '90%' }}
       />
       <FloatingLabelInput
-        label="Email"
+        label="Почта"
         value={email}
         onChangeText={setEmail}
         style={{ width: width > 700 ? '30%' : '90%' }}

@@ -105,7 +105,7 @@ const TripsScreen = () => {
           {trips.map((trip) => (
             <View key={trip.id} style={[styles.tripCard, { width: width > 700 ? '40%' : '100%' }]}>
               <Text style={styles.tripName}>
-                {`От: "${trip.get('fromCity')}" — До: "${trip.get('toCity')}`}
+                {`От: "${trip.get('fromCity')}" — До: "${trip.get('toCity')}"`}
               </Text>
               <View style={styles.tripDetailsContainer}>
                 <View style={styles.row}>
@@ -180,9 +180,9 @@ const TripsScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
+    width: '100%',
     flex: 1,
     backgroundColor: '#f4f4f4',
-    paddingHorizontal: 20,
   },
   header: {
     fontSize: 26,

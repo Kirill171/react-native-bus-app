@@ -1,10 +1,10 @@
 {
   "expo": {
     "name": "Jetset",
-    "slug": "Jetset",
+    "slug": "jetset",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/bus-logo.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/bus-logo.png",
@@ -16,15 +16,18 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.example.bustripfinder",
+      "bundleIdentifier": "com.jetset.bustripfinder",
       "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/bus-logo.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.example.bustripfinder",
+      "statusBar": {
+        "backgroundColor": "transparent"
+      },
+      "package": "com.jetset.bustripfinder",
       "versionCode": 1
     },
     "web": {
@@ -40,7 +43,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "your-project-id"
+        "projectId": "d14b20c2-83ea-4fbc-a45f-8d8f5943dd69"
       }
     },
     "newArchEnabled": true,

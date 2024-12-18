@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, useWindowDimensions } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, useWindowDimensions, Platform } from 'react-native';
 
 interface TripsFormProps {
   initialData?: any;
@@ -35,9 +35,24 @@ const TripsForm: React.FC<TripsFormProps> = ({ initialData, onSave, onCancel }) 
     busBrand: '',
     busColor: '',
     busNumberPlate: '',
-    totalSeats: '0',
-    remainingSeats: '0',
+    totalSeats: '',
+    remainingSeats: '',
   });
+
+  const placeholders: { [key in keyof FormData]: string } = {
+    fromCity: 'Город отправления',
+    toCity: 'Город прибытия',
+    departureTime: 'Время отправления (гггг-мм-дд чч:мм)',
+    arrivalTime: 'Время прибытия (гггг-мм-дд чч:мм)',
+    price: 'Цена (в рублях)',
+    driverName: 'Имя водителя',
+    driverPhone: 'Телефон водителя',
+    busBrand: 'Марка автобуса',
+    busColor: 'Цвет автобуса',
+    busNumberPlate: 'Номерной знак автобуса',
+    totalSeats: 'Всего мест',
+    remainingSeats: 'Оставшиеся места',
+  };
 
   useEffect(() => {
     if (initialData) {
@@ -52,27 +67,54 @@ const TripsForm: React.FC<TripsFormProps> = ({ initialData, onSave, onCancel }) 
         busBrand: initialData.busBrand || '',
         busColor: initialData.busColor || '',
         busNumberPlate: initialData.busNumberPlate || '',
-        totalSeats: (initialData.totalSeats || '0').toString(),
-        remainingSeats: (initialData.remainingSeats || '0').toString(),
+        totalSeats: (initialData.totalSeats || '').toString(),
+        remainingSeats: (initialData.remainingSeats || '').toString(),
       });
     }
   }, [initialData]);
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev) => {
+      const updatedFormData = { ...prev, [field]: value };
+      if (field === 'totalSeats') {
+        const totalSeats = parseInt(value, 10) || 0;
+        const remainingSeats = parseInt(updatedFormData.remainingSeats, 10) || 0;
+
+        if (remainingSeats > totalSeats) {
+          updatedFormData.remainingSeats = totalSeats.toString();
+        }
+      }
+
+      return updatedFormData;
+    });
   };
 
   const handleSave = () => {
+    const totalSeats = parseInt(formData.totalSeats, 10);
+    const remainingSeats = parseInt(formData.remainingSeats, 10);
+
     if (!formData.fromCity || !formData.toCity) {
       Alert.alert('Ошибка', 'Поля "Откуда" и "Куда" обязательны.');
       return;
     }
+
+    if (remainingSeats > totalSeats) {
+      Alert.alert(
+        'Ошибка',
+        'Оставшихся мест не может быть больше общего количества мест.'
+      );
+      if (Platform.OS === 'web') {
+        alert('Оставшихся мест не может быть больше общего количества мест.');
+      }
+      return;
+    }
+
     const updatedData = {
       ...formData,
       departureTime: new Date(formData.departureTime),
       arrivalTime: new Date(formData.arrivalTime),
-      totalSeats: parseInt(formData.totalSeats, 10),
-      remainingSeats: parseInt(formData.remainingSeats, 10),
+      totalSeats,
+      remainingSeats,
     };
 
     onSave(updatedData);
@@ -88,7 +130,7 @@ const TripsForm: React.FC<TripsFormProps> = ({ initialData, onSave, onCancel }) 
             placeholderTextColor={'gray'}
             key={typedKey}
             style={styles.input}
-            placeholder={typedKey}
+            placeholder={placeholders[typedKey]}
             value={formData[typedKey] || ''}
             onChangeText={(text) => handleInputChange(typedKey, text)}
           />
@@ -105,6 +147,7 @@ const TripsForm: React.FC<TripsFormProps> = ({ initialData, onSave, onCancel }) 
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   input: {
