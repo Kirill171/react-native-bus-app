@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,20 +8,23 @@ import {
   useWindowDimensions
 } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { setFromCity, setToCity } from '@/store/searchSlice';
+import {
+  setImproveFromCity,
+  setImproveToCity
+} from '@/store/searchSlice';
 
-interface ModalCitySelectorProps {
-  clue: string;
+interface ImproveModalCitySelectorProps {
+  propsCity: string;
   isFromCity: boolean;
 }
 
-const ModalCitySelector = ({
-  clue,
+const ImproveModalCitySelector = ({
+  propsCity,
   isFromCity
-}: ModalCitySelectorProps) => {
+}: ImproveModalCitySelectorProps) => {
   const dispatch = useDispatch();
   const { width } = useWindowDimensions();
-  const [selectedCity, setSelectedCity] = useState('Выберите город');
+  const [selectedCity, setSelectedCity] = useState(propsCity);
   const [modalVisible, setModalVisible] = useState(false);
 
   const cities = [
@@ -35,12 +38,16 @@ const ModalCitySelector = ({
     'Барановичи'
   ];
 
+  useEffect(() => {
+    setSelectedCity(propsCity || 'Выберите город');
+  }, [propsCity]);
+
   const selectCity = (city: string) => {
     setSelectedCity(city);
     if (isFromCity) {
-      dispatch(setFromCity(city));
+      dispatch(setImproveFromCity(city));
     } else {
-      dispatch(setToCity(city));
+      dispatch(setImproveToCity(city));
     }
     setModalVisible(false);
   };
@@ -49,12 +56,8 @@ const ModalCitySelector = ({
     <View style={styles.container}>
       <TouchableOpacity
         onPress={() => setModalVisible(true)}
-        style={[
-          styles.selector,
-          { width: width > 700 ? '30%' : '90%' }
-        ]}
+        style={styles.selector}
       >
-        <Text style={styles.clue}>{clue}</Text>
         <Text style={styles.cityText}>{selectedCity}</Text>
       </TouchableOpacity>
 
@@ -90,22 +93,26 @@ const ModalCitySelector = ({
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center'
+    alignItems: 'center',
+    width: '100%'
   },
   selector: {
-    width: '90%',
+    width: '100%',
     padding: 15,
-    backgroundColor: '#ddd',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: 'black'
-  },
-  clue: {
-    position: 'absolute',
-    top: 5,
-    left: 10,
-    color: 'gray',
-    fontSize: 12
+    alignItems: 'flex-start',
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+    marginVertical: 5
   },
   cityText: {
     fontSize: 16,
@@ -149,4 +156,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ModalCitySelector;
+export default ImproveModalCitySelector;

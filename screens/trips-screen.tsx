@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, Alert, ScrollView, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
+import {
+  View,
+  Text,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions
+} from 'react-native';
 import Parse from '@/config/parse-config';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
@@ -7,7 +15,8 @@ import TripForm from '@/components/trips-form';
 
 const TripsScreen = () => {
   const [trips, setTrips] = useState<Parse.Object[]>([]);
-  const [editTripData, setEditTripData] = useState<Parse.Object | null>(null);
+  const [editTripData, setEditTripData] =
+    useState<Parse.Object | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const { width } = useWindowDimensions();
 
@@ -32,10 +41,15 @@ const TripsScreen = () => {
     setIsAdding(true);
   };
 
-  const saveTrip = async (tripData: Record<string, any>, tripId?: string) => {
+  const saveTrip = async (
+    tripData: Record<string, any>,
+    tripId?: string
+  ) => {
     try {
       const Trip = Parse.Object.extend('BusTrips');
-      const trip = tripId ? trips.find((t) => t.id === tripId) || new Trip() : new Trip();
+      const trip = tripId
+        ? trips.find((t) => t.id === tripId) || new Trip()
+        : new Trip();
 
       Object.entries(tripData).forEach(([key, value]) => {
         if (key === 'departureTime' || key === 'arrivalTime') {
@@ -46,7 +60,10 @@ const TripsScreen = () => {
       });
 
       await trip.save();
-      Alert.alert('Успех', tripId ? 'Рейс обновлен!' : 'Рейс добавлен!');
+      Alert.alert(
+        'Успех',
+        tripId ? 'Рейс обновлен!' : 'Рейс добавлен!'
+      );
       setTrips((prevTrips) =>
         tripId
           ? prevTrips.map((t) => (t.id === tripId ? trip : t))
@@ -96,62 +113,109 @@ const TripsScreen = () => {
             onCancel={cancelEditOrAdd}
           />
         ) : (
-          <TouchableOpacity style={[styles.addButton, { width: width > 700 ? '60%' : '100%' }]} onPress={handleAddTrip}>
+          <TouchableOpacity
+            style={[
+              styles.addButton,
+              { width: width > 700 ? '60%' : '100%' }
+            ]}
+            onPress={handleAddTrip}
+          >
             <Text style={styles.addButtonText}>Добавить рейс</Text>
           </TouchableOpacity>
         )}
 
-        <View style={[styles.tripList, { width: width > 700 ? '60%' : '100%' }]}>
+        <View
+          style={[
+            styles.tripList,
+            { width: width > 700 ? '60%' : '100%' }
+          ]}
+        >
           {trips.map((trip) => (
-            <View key={trip.id} style={[styles.tripCard, { width: width > 700 ? '40%' : '100%' }]}>
+            <View
+              key={trip.id}
+              style={[
+                styles.tripCard,
+                { width: width > 700 ? '40%' : '100%' }
+              ]}
+            >
               <Text style={styles.tripName}>
-                {`От: "${trip.get('fromCity')}" — До: "${trip.get('toCity')}"`}
+                {`От: "${trip.get('fromCity')}" — До: "${trip.get(
+                  'toCity'
+                )}"`}
               </Text>
               <View style={styles.tripDetailsContainer}>
                 <View style={styles.row}>
                   <View style={styles.column}>
-                    <Text style={styles.detailKey}>Время отправления:</Text>
+                    <Text style={styles.detailKey}>
+                      Время отправления:
+                    </Text>
                     <Text style={styles.detailValue}>
-                      {new Date(trip.get('departureTime')).toLocaleString()}
+                      {new Date(
+                        trip.get('departureTime')
+                      ).toLocaleString()}
                     </Text>
                   </View>
                   <View style={styles.column}>
-                    <Text style={styles.detailKey}>Время прибытия:</Text>
+                    <Text style={styles.detailKey}>
+                      Время прибытия:
+                    </Text>
                     <Text style={styles.detailValue}>
-                      {new Date(trip.get('arrivalTime')).toLocaleString()}
+                      {new Date(
+                        trip.get('arrivalTime')
+                      ).toLocaleString()}
                     </Text>
                   </View>
                 </View>
                 <View style={styles.row}>
                   <View style={styles.column}>
                     <Text style={styles.detailKey}>Цена:</Text>
-                    <Text style={styles.detailValue}>{trip.get('price')} BYN</Text>
+                    <Text style={styles.detailValue}>
+                      {trip.get('price')} BYN
+                    </Text>
                   </View>
                   <View style={styles.column}>
-                    <Text style={styles.detailKey}>Осталось мест:</Text>
+                    <Text style={styles.detailKey}>
+                      Осталось мест:
+                    </Text>
                     <Text style={styles.detailValue}>
-                      {`${trip.get('remainingSeats')} из ${trip.get('totalSeats')}`}
+                      {`${trip.get('remainingSeats')} из ${trip.get(
+                        'totalSeats'
+                      )}`}
                     </Text>
                   </View>
                 </View>
                 <View style={styles.row}>
                   <View style={styles.column}>
                     <Text style={styles.detailKey}>Водитель:</Text>
-                    <Text style={styles.detailValue}>{trip.get('driverName')}</Text>
+                    <Text style={styles.detailValue}>
+                      {trip.get('driverName')}
+                    </Text>
                   </View>
                   <View style={styles.column}>
-                    <Text style={styles.detailKey}>Телефон водителя:</Text>
-                    <Text style={styles.detailValue}>{trip.get('driverPhone')}</Text>
+                    <Text style={styles.detailKey}>
+                      Телефон водителя:
+                    </Text>
+                    <Text style={styles.detailValue}>
+                      {trip.get('driverPhone')}
+                    </Text>
                   </View>
                 </View>
                 <View style={styles.row}>
                   <View style={styles.column}>
-                    <Text style={styles.detailKey}>Номер автобуса:</Text>
-                    <Text style={styles.detailValue}>{trip.get('busNumberPlate')}</Text>
+                    <Text style={styles.detailKey}>
+                      Номер автобуса:
+                    </Text>
+                    <Text style={styles.detailValue}>
+                      {trip.get('busNumberPlate')}
+                    </Text>
                   </View>
                   <View style={styles.column}>
-                    <Text style={styles.detailKey}>Марка автобуса:</Text>
-                    <Text style={styles.detailValue}>{trip.get('busBrand')}</Text>
+                    <Text style={styles.detailKey}>
+                      Марка автобуса:
+                    </Text>
+                    <Text style={styles.detailValue}>
+                      {trip.get('busBrand')}
+                    </Text>
                   </View>
                 </View>
               </View>
@@ -182,14 +246,14 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     flex: 1,
-    backgroundColor: '#f4f4f4',
+    backgroundColor: '#f4f4f4'
   },
   header: {
     fontSize: 26,
     fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: 20,
-    color: '#333',
+    color: '#333'
   },
   addButton: {
     backgroundColor: '#4CAF50',
@@ -197,79 +261,79 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 15,
     alignSelf: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   addButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   tripList: {
     paddingVertical: 20,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignSelf: 'center',
-    flexWrap: 'wrap',
+    flexWrap: 'wrap'
   },
   tripCard: {
     backgroundColor: '#fff',
     padding: 15,
     borderRadius: 10,
-    marginBottom: 15,
+    marginBottom: 15
   },
   tripName: {
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 10,
     color: '#333',
-    textAlign: 'center',
+    textAlign: 'center'
   },
   tripDetailsContainer: {
     marginTop: 10,
-    marginBottom: 10,
+    marginBottom: 10
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginBottom: 10
   },
   column: {
     flex: 1,
-    paddingHorizontal: 5,
+    paddingHorizontal: 5
   },
   detailKey: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#444',
+    color: '#444'
   },
   detailValue: {
     fontSize: 14,
     color: '#666',
-    textAlign: 'left',
+    textAlign: 'left'
   },
   buttonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 20,
+    marginTop: 20
   },
   button: {
     flex: 1,
     padding: 10,
     borderRadius: 5,
     marginHorizontal: 5,
-    alignItems: 'center',
+    alignItems: 'center'
   },
   editButton: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#2196F3'
   },
   deleteButton: {
-    backgroundColor: '#f44336',
+    backgroundColor: '#f44336'
   },
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
-    textAlign: 'center',
-  },
+    textAlign: 'center'
+  }
 });
 
 export default TripsScreen;

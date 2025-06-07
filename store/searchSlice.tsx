@@ -9,6 +9,10 @@ const initialState: SearchState = {
   busTripsData: null,
   busTripData: null,
   busTripId: '',
+  improveFromCity: '',
+  improveToCity: '',
+  departureTime: Date.now(),
+  arrivalTime: Date.now()
 };
 
 const searchSlice = createSlice({
@@ -36,7 +40,19 @@ const searchSlice = createSlice({
     setBusTripId: (state, action) => {
       state.busTripId = action.payload;
     },
-  },
+    setImproveFromCity: (state, action) => {
+      state.improveFromCity = action.payload;
+    },
+    setImproveToCity: (state, action) => {
+      state.improveToCity = action.payload;
+    },
+    setDepartureTime: (state, action) => {
+      state.departureTime = action.payload;
+    },
+    setArrivalTime: (state, action) => {
+      state.arrivalTime = action.payload;
+    }
+  }
 });
 
 export const {
@@ -46,6 +62,11 @@ export const {
   setPassengers,
   setBusTripsData,
   setBusTripData,
-  setBusTripId } = searchSlice.actions;
+  setBusTripId,
+  setImproveFromCity,
+  setImproveToCity,
+  setArrivalTime,
+  setDepartureTime
+} = searchSlice.actions;
 
 export default searchSlice.reducer;

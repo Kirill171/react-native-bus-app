@@ -1,5 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, useWindowDimensions, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  useWindowDimensions,
+  Platform
+} from 'react-native';
+import ImproveModalCitySelector from './improve-search-params/improve-city-selector';
+import ImproveDatePicker from './improve-search-params/improve-date-picker';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import {
+  setImproveFromCity,
+  setImproveToCity,
+  setDepartureTime,
+  setArrivalTime
+} from '@/store/searchSlice';
+import { RootState } from '@/store';
 
 interface TripsFormProps {
   initialData?: any;
@@ -10,8 +30,8 @@ interface TripsFormProps {
 type FormData = {
   fromCity: string;
   toCity: string;
-  departureTime: string;
-  arrivalTime: string;
+  departureTime: number;
+  arrivalTime: number;
   price: string;
   driverName: string;
   driverPhone: string;
@@ -22,13 +42,24 @@ type FormData = {
   remainingSeats: string;
 };
 
-const TripsForm: React.FC<TripsFormProps> = ({ initialData, onSave, onCancel }) => {
+const TripsForm: React.FC<TripsFormProps> = ({
+  initialData,
+  onSave,
+  onCancel
+}) => {
   const { width } = useWindowDimensions();
+  const dispatch = useDispatch();
+  const {
+    improveFromCity,
+    improveToCity,
+    departureTime,
+    arrivalTime
+  } = useSelector((state: RootState) => state.search);
   const [formData, setFormData] = useState<FormData>({
     fromCity: '',
     toCity: '',
-    departureTime: new Date().toISOString().slice(0, 16),
-    arrivalTime: new Date().toISOString().slice(0, 16),
+    departureTime: Date.now(),
+    arrivalTime: Date.now(),
     price: '',
     driverName: '',
     driverPhone: '',
@@ -36,7 +67,7 @@ const TripsForm: React.FC<TripsFormProps> = ({ initialData, onSave, onCancel }) 
     busColor: '',
     busNumberPlate: '',
     totalSeats: '',
-    remainingSeats: '',
+    remainingSeats: ''
   });
 
   const placeholders: { [key in keyof FormData]: string } = {
@@ -51,16 +82,33 @@ const TripsForm: React.FC<TripsFormProps> = ({ initialData, onSave, onCancel }) 
     busColor: 'Цвет автобуса',
     busNumberPlate: 'Номерной знак автобуса',
     totalSeats: 'Всего мест',
-    remainingSeats: 'Оставшиеся места',
+    remainingSeats: 'Оставшиеся места'
   };
 
   useEffect(() => {
     if (initialData) {
+      dispatch(setImproveFromCity(initialData.fromCity));
+      dispatch(setImproveToCity(initialData.toCity));
+      dispatch(
+        setDepartureTime(
+          typeof initialData.departureTime === 'number'
+            ? initialData.departureTime
+            : initialData.departureTime.getTime()
+        )
+      );
+      dispatch(
+        setArrivalTime(
+          typeof initialData.arrivalTime === 'number'
+            ? initialData.arrivalTime
+            : initialData.arrivalTime.getTime()
+        )
+      );
+
       setFormData({
         fromCity: initialData.fromCity || '',
         toCity: initialData.toCity || '',
-        departureTime: initialData.departureTime.toISOString().slice(0, 16) || '',
-        arrivalTime: initialData.arrivalTime.toISOString().slice(0, 16) || '',
+        departureTime: initialData.departureTime || Date.now(),
+        arrivalTime: initialData.arrivalTime || Date.now(),
         price: initialData.price || '',
         driverName: initialData.driverName || '',
         driverPhone: initialData.driverPhone || '',
@@ -68,7 +116,7 @@ const TripsForm: React.FC<TripsFormProps> = ({ initialData, onSave, onCancel }) 
         busColor: initialData.busColor || '',
         busNumberPlate: initialData.busNumberPlate || '',
         totalSeats: (initialData.totalSeats || '').toString(),
-        remainingSeats: (initialData.remainingSeats || '').toString(),
+        remainingSeats: (initialData.remainingSeats || '').toString()
       });
     }
   }, [initialData]);
@@ -78,7 +126,8 @@ const TripsForm: React.FC<TripsFormProps> = ({ initialData, onSave, onCancel }) 
       const updatedFormData = { ...prev, [field]: value };
       if (field === 'totalSeats') {
         const totalSeats = parseInt(value, 10) || 0;
-        const remainingSeats = parseInt(updatedFormData.remainingSeats, 10) || 0;
+        const remainingSeats =
+          parseInt(updatedFormData.remainingSeats, 10) || 0;
 
         if (remainingSeats > totalSeats) {
           updatedFormData.remainingSeats = totalSeats.toString();
@@ -93,7 +142,7 @@ const TripsForm: React.FC<TripsFormProps> = ({ initialData, onSave, onCancel }) 
     const totalSeats = parseInt(formData.totalSeats, 10);
     const remainingSeats = parseInt(formData.remainingSeats, 10);
 
-    if (!formData.fromCity || !formData.toCity) {
+    if (!improveFromCity || !improveToCity) {
       Alert.alert('Ошибка', 'Поля "Откуда" и "Куда" обязательны.');
       return;
     }
@@ -104,50 +153,110 @@ const TripsForm: React.FC<TripsFormProps> = ({ initialData, onSave, onCancel }) 
         'Оставшихся мест не может быть больше общего количества мест.'
       );
       if (Platform.OS === 'web') {
-        alert('Оставшихся мест не может быть больше общего количества мест.');
+        alert(
+          'Оставшихся мест не может быть больше общего количества мест.'
+        );
       }
       return;
     }
 
     const updatedData = {
       ...formData,
-      departureTime: new Date(formData.departureTime),
-      arrivalTime: new Date(formData.arrivalTime),
+      fromCity: improveFromCity,
+      toCity: improveToCity,
+      departureTime: departureTime,
+      arrivalTime: arrivalTime,
       totalSeats,
-      remainingSeats,
+      remainingSeats
     };
 
     onSave(updatedData);
+    dispatch(setImproveFromCity(''));
+    dispatch(setImproveToCity(''));
+    dispatch(setDepartureTime(Date.now()));
+    dispatch(setArrivalTime(Date.now()));
   };
 
   return (
-    <View style={[styles.editForm, { width: width > 700 ? '40%' : '100%' }]}>
-      <Text style={styles.tableHeader}>{initialData ? 'Редактирование рейса' : 'Добавление рейса'}</Text>
+    <View
+      style={[
+        styles.editForm,
+        { width: width > 700 ? '40%' : '100%' }
+      ]}
+    >
+      <Text style={styles.tableHeader}>
+        {initialData ? 'Редактирование рейса' : 'Добавление рейса'}
+      </Text>
       {Object.keys(formData).map((key) => {
         const typedKey = key as keyof FormData;
+        if (key === 'fromCity') {
+          return (
+            <View key={typedKey}>
+              <ImproveModalCitySelector
+                propsCity={formData.fromCity}
+                isFromCity={true}
+              />
+            </View>
+          );
+        }
+        if (key === 'toCity') {
+          return (
+            <View key={typedKey}>
+              <ImproveModalCitySelector
+                propsCity={formData.toCity}
+                isFromCity={false}
+              />
+            </View>
+          );
+        }
+        if (key === 'departureTime') {
+          return (
+            <View key={typedKey} style={styles.fon}>
+              <ImproveDatePicker
+                propsDate={formData.departureTime}
+                isDepartureTime={true}
+              />
+            </View>
+          );
+        }
+        if (key === 'arrivalTime') {
+          return (
+            <View key={typedKey}>
+              <ImproveDatePicker
+                propsDate={formData.arrivalTime}
+                isDepartureTime={false}
+              />
+            </View>
+          );
+        }
         return (
           <TextInput
             placeholderTextColor={'gray'}
             key={typedKey}
             style={styles.input}
             placeholder={placeholders[typedKey]}
-            value={formData[typedKey] || ''}
+            value={String(formData[typedKey] ?? '')}
             onChangeText={(text) => handleInputChange(typedKey, text)}
           />
         );
       })}
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={[styles.button, styles.greenButton]} onPress={handleSave}>
+        <TouchableOpacity
+          style={[styles.button, styles.greenButton]}
+          onPress={handleSave}
+        >
           <Text style={styles.buttonText}>Сохранить</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={onCancel}>
+        <TouchableOpacity
+          style={[styles.button, styles.deleteButton]}
+          onPress={onCancel}
+        >
           <Text style={styles.buttonText}>Отмена</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   input: {
@@ -163,21 +272,21 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-    marginVertical: 5,
+    marginVertical: 5
   },
   editForm: {
     borderRadius: 10,
     alignSelf: 'center',
     paddingHorizontal: 40,
     paddingVertical: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#fff'
   },
   tableHeader: {
     fontSize: 22,
     marginBottom: 15,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#333',
+    color: '#333'
   },
   buttonsContainer: {
     flexDirection: 'row',
@@ -189,19 +298,22 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginHorizontal: 5,
-    alignItems: 'center',
+    alignItems: 'center'
   },
   greenButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#4CAF50'
   },
   deleteButton: {
-    backgroundColor: '#f44336',
+    backgroundColor: '#f44336'
   },
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
-    textAlign: 'center',
+    textAlign: 'center'
   },
+  fon: {
+    zIndex: 1000
+  }
 });
 
 export default TripsForm;

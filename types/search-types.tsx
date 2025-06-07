@@ -1,5 +1,5 @@
 import BusTripData from '@/types/bus-trip-data';
-import Attributes from '@/types/attributes'
+import Attributes from '@/types/attributes';
 
 export default interface SearchState {
   fromCity: string;
@@ -9,4 +9,8 @@ export default interface SearchState {
   busTripsData: BusTripData[] | null;
   busTripData: Attributes | null;
   busTripId: string;
+  improveFromCity: string;
+  improveToCity: string;
+  departureTime: number;
+  arrivalTime: number;
 }
